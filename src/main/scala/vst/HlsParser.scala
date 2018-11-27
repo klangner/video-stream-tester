@@ -4,17 +4,19 @@ import scala.collection.mutable.ListBuffer
 
 object HlsParser {
 
+  case class MasterPlaylist(streams: Seq[StreamInfo])
   case class StreamInfo(bandwidth: Int, playlistUrl: String)
 
-  private val bandwidthPattern = """BANDWIDTH=(\d*)""".r
 
-  def parseMasterPlaylist(text: String): Seq[StreamInfo] = {
+  private val BANDWIDTH_PATTERN = """BANDWIDTH=(\d*)""".r
+
+  def parseMasterPlaylist(text: String): MasterPlaylist = {
     val streams = new ListBuffer[StreamInfo]()
     var bandwidth = 0
 
     text.lines.foreach{ line =>
       if (line.startsWith("#EXT-X-STREAM-INF")) {
-        bandwidthPattern
+        BANDWIDTH_PATTERN
           .findFirstMatchIn(line)
           .map(_.group(1))
           .foreach(b => bandwidth = b.toInt)
@@ -22,6 +24,6 @@ object HlsParser {
         streams.append(StreamInfo(bandwidth, line))
       }
     }
-    streams.toList
+    MasterPlaylist(streams.toList)
   }
 }

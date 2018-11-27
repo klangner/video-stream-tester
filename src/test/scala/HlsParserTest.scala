@@ -21,7 +21,7 @@ class HlsParserTest extends FlatSpec with Matchers {
     """.stripMargin
 
   "HlsParser" should "parse master playlist" in {
-    val streamInfos = HlsParser.parseMasterPlaylist(master)
+    val masterPlaylist = HlsParser.parseMasterPlaylist(master)
     val expected = Seq(
       StreamInfo(1296, "640x360_1200.m3u8"),
       StreamInfo(264, "416x234_200.m3u8"),
@@ -29,7 +29,7 @@ class HlsParserTest extends FlatSpec with Matchers {
       StreamInfo(1628, "960x540_1500.m3u8"),
       StreamInfo(2628, "1280x720_2500.m3u8")
     )
-    streamInfos shouldBe expected
+    masterPlaylist.streams shouldBe expected
   }
 
 }
